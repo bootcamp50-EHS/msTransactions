@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -26,6 +27,10 @@ public class Transaction {
     private BigDecimal amount;
     //Tipo de Transaccion (Deposito o Retiro)
     private String typeTransaction;
+    // Signo de la trnasaccion (1 o -1)
+    private Integer sign;
     //Cuenta a la cual pertenece la transaccion
     private String accountId;
+    // Fecha y hora de la transaccion
+    private LocalDateTime dateTimeTransaction;
 }
