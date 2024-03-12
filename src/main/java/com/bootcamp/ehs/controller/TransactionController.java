@@ -15,7 +15,7 @@ import reactor.core.publisher.Flux;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/transaction")
+@RequestMapping("/api/transaction")
 public class TransactionController   {
 
     private final ITransactionService transactionService;

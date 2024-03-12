@@ -31,6 +31,7 @@ public class CommissionServiceImpl implements ICommisionService {
         // AccountIdAndTimestampBetween(transaction.getAccountId(), startOfMonth, now)
         return transactionRepo.countByAccountId(transaction.getAccountId())
                 .count()
+                .doOnNext(count -> log.info("Cantidad e transacciones: "+ count.toString()))
                 .flatMap(count -> commissionStrategy.calculateCommission(count))
                 .filter(monto -> monto.compareTo(BigDecimal.ZERO) > 0)
                 .doOnNext(cuenta -> log.info("Pasando a logica de comision: "+ cuenta))
