@@ -20,7 +20,7 @@ public class WebClientAccountServiceImpl implements IWebClientAccountService {
     @Override
     public Mono<AccountDTO> findAccountById(String accountId) {
         return accountWebClient.get()
-                .uri("/account/{accountId}", accountId)
+                .uri("/api/account/list/{accountId}", accountId)
                 .retrieve()
                 .bodyToMono(AccountDTO.class);
     }
@@ -28,7 +28,7 @@ public class WebClientAccountServiceImpl implements IWebClientAccountService {
     @Override
     public Mono<AccountDTO> updateAccount(AccountDTO account) {
         return accountWebClient.put()
-                .uri("/account")
+                .uri("/api/account/update")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .bodyValue(account)
                 .retrieve()
