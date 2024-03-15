@@ -38,6 +38,7 @@ public class TransactionTransferServiceImpl implements ITransactionTransferServi
                         .flatMap(accountTo -> processTransfer(accountFrom, accountTo, transfer)));
     }
 
+    // Metodo que actualiza las cuentas origen y destino solo si saveTransation es exitoso
     private Mono<WireTransfer> processTransfer(AccountDTO accountFrom, AccountDTO accountTo, TransferDTO transfer) {
         updateAccountBalances(accountFrom, accountTo, transfer.getAmount());
         return saveTransactions(accountFrom, accountTo, transfer)
@@ -46,22 +47,26 @@ public class TransactionTransferServiceImpl implements ITransactionTransferServi
                 .flatMap(account -> saveWireTransfer(accountFrom, accountTo, transfer));
     }
 
+    //Metodo para setear el nuevo importe en las cuentas de origen y destino
     private void updateAccountBalances(AccountDTO accountFrom, AccountDTO accountTo, BigDecimal amount) {
         accountFrom.setAmount(accountFrom.getAmount().subtract(amount));
         accountTo.setAmount(accountTo.getAmount().add(amount));
     }
 
+    //metodo que graba los movimientos de deposito y retiro de la transferencia
     private Mono<Transaction> saveTransactions(AccountDTO accountFrom, AccountDTO accountTo, TransferDTO transfer) {
         Transaction withdrawal = createTransaction(transfer, "Transferencia", -1, accountFrom.getId());
         Transaction deposit = createTransaction(transfer, "Transferencia", 1, accountTo.getId());
         return transactionRepo.save(withdrawal).then(transactionRepo.save(deposit));
     }
 
+    //Metodo que setea los nuevos datos para los movimientos de deposito y retiro
     private Transaction createTransaction(TransferDTO transfer, String type, int sign, String accountId) {
         return new Transaction(null, transfer.getCodeOperation(), transfer.getDescription(), LocalDate.now().toString(),
-                transfer.getAmount(), type, sign, accountId, LocalDateTime.now());
+                transfer.getAmount(), type, sign, accountId,null, LocalDateTime.now());
     }
 
+    // Metodo que graba la informacion de la transferencia entre cuentas
     private Mono<WireTransfer> saveWireTransfer(AccountDTO accountFrom, AccountDTO accountTo, TransferDTO transfer) {
         WireTransfer wireTransfer = new WireTransfer();
         wireTransfer.setAccountFrom(accountFrom);

@@ -11,10 +11,20 @@ public class WebClientConfig {
     @Value("${account.service.url}")
     private String accountServiceUrl;
 
+    @Value("${credit.service.url}")
+    private String creditServiceUrl;
+
     @Bean
-    public WebClient customerWebClient() {
+    public WebClient accountWebClient() {
         return WebClient.builder()
                 .baseUrl(accountServiceUrl)
+                .build();
+    }
+
+    @Bean
+    public WebClient creditWebClient(){
+        return WebClient.builder()
+                .baseUrl(creditServiceUrl)
                 .build();
     }
 

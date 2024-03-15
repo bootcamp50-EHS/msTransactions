@@ -11,6 +11,8 @@ public interface ITransactionService {
 
     Flux<Transaction> findTransactionsByAccountId(String accountId);
 
+    Flux<Transaction> findTrasactionsByAccountIdAndTypeTransaction(String accountId, String typeTransaction);
+
     Mono<WireTransfer> registerTransfer(WireTransfer wireTransfer);
 
 }

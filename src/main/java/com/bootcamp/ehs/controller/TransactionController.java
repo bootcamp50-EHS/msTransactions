@@ -26,6 +26,8 @@ public class TransactionController   {
 
     private final ITransactionTransferService transferService;
 
+    private final ITransactionPayCreditService payCreditService;
+
     private final ICommisionService commisionService;
 
     // Metodo para crear la transaccion
@@ -55,6 +57,13 @@ public class TransactionController   {
     @PostMapping("/transfer")
     public Mono<WireTransfer> registerTransferBetweenAccount(@RequestBody TransferDTO transferDTO){
         return transferService.doTransferBetweenAccounts(transferDTO);
+    }
+
+    @PostMapping("/paycredit")
+    public Mono<ResponseEntity<Transaction>> registerPayCredit(@RequestBody Transaction transaction){
+        return payCreditService.doPayCredit(transaction).
+                map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

@@ -10,4 +10,5 @@ public interface ITransactionRepo extends ReactiveMongoRepository<Transaction, S
 
     Flux<Transaction> countByAccountId(String accountId);
 
+    Flux<Transaction> findByAccountIdAndTypeTransaction(String accountId, String typeTransaction);
 }

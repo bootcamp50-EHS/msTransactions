@@ -31,6 +31,8 @@ public class Transaction {
     private Integer sign;
     //Cuenta a la cual pertenece la transaccion
     private String accountId;
+    //Credito a la cual pertenece la transaccion
+    private String creditId;
     // Fecha y hora de la transaccion
     private LocalDateTime dateTimeTransaction;
 }
