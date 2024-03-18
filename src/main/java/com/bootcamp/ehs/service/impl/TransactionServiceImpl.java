@@ -22,12 +22,18 @@ public class TransactionServiceImpl implements ITransactionService {
 
     @Override
     public Mono<Transaction> register(Transaction transaction) {
+
         return transactionRepo.save(transaction);
     }
 
     @Override
     public Flux<Transaction> findTransactionsByAccountId(String accountId) {
         return transactionRepo.findAllByAccountId(accountId);
+    }
+
+    @Override
+    public Flux<Transaction> findTrasactionsByAccountIdAndTypeTransaction(String accountId, String typeTransaction) {
+        return transactionRepo.findByAccountIdAndTypeTransaction(accountId,typeTransaction);
     }
 
     @Override

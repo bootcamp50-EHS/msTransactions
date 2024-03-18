@@ -1,43 +1,41 @@
 package com.bootcamp.ehs.service.impl;
 
 import com.bootcamp.ehs.DTO.AccountDTO;
-import com.bootcamp.ehs.service.IWebClientAccountService;
+import com.bootcamp.ehs.DTO.CreditDTO;
+import com.bootcamp.ehs.service.IWebClientCreditService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
-public class WebClientAccountServiceImpl implements IWebClientAccountService {
+public class WebClientCreditService implements IWebClientCreditService {
 
-    @Qualifier("accountWebClient")
-    private final WebClient accountWebClient;
+    @Qualifier("creditWebClient")
+    private final WebClient creditWebClient;
 
     @Qualifier("gatewayServiceUrl")
     private final WebClient webClient;
 
     @Override
-    public Mono<AccountDTO> findAccountById(String accountId) {
+    public Mono<CreditDTO> findCreditById(String creditId) {
         return webClient.get()
-                .uri("/api/account/list/{accountId}", accountId)
+                .uri("/api/credit/retrieve/{creditId}", creditId)
                 .retrieve()
-                .bodyToMono(AccountDTO.class);
+                .bodyToMono(CreditDTO.class);
     }
 
     @Override
-    public Mono<AccountDTO> updateAccount(AccountDTO account) {
+    public Mono<CreditDTO> updateCredit(CreditDTO credit) {
         return webClient.put()
-                .uri("/api/account/update")
+                .uri("/api/credit/update")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .bodyValue(account)
+                .bodyValue(credit)
                 .retrieve()
-                .bodyToMono(AccountDTO.class);
+                .bodyToMono(CreditDTO.class);
     }
-
-
 }

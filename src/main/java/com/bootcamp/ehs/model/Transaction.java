@@ -1,6 +1,7 @@
 package com.bootcamp.ehs.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Document(collection="transactions")
 public class Transaction {
 
@@ -31,6 +33,9 @@ public class Transaction {
     private Integer sign;
     //Cuenta a la cual pertenece la transaccion
     private String accountId;
+    //Credito a la cual pertenece la transaccion
+    private String creditId;
     // Fecha y hora de la transaccion
-    private LocalDateTime dateTimeTransaction;
+    @Builder.Default
+    private LocalDateTime dateTimeTransaction = LocalDateTime.now();
 }
