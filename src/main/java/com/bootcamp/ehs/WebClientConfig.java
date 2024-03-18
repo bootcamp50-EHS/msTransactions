@@ -8,6 +8,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class WebClientConfig {
 
+    @Value("${gateway.service.url}")
+    private String gatewayServiceUrl;
+
     @Value("${account.service.url}")
     private String accountServiceUrl;
 
@@ -25,6 +28,13 @@ public class WebClientConfig {
     public WebClient creditWebClient(){
         return WebClient.builder()
                 .baseUrl(creditServiceUrl)
+                .build();
+    }
+
+    @Bean
+    public WebClient webClient(){
+        return WebClient.builder()
+                .baseUrl(gatewayServiceUrl)
                 .build();
     }
 

@@ -18,9 +18,12 @@ public class WebClientCreditService implements IWebClientCreditService {
     @Qualifier("creditWebClient")
     private final WebClient creditWebClient;
 
+    @Qualifier("gatewayServiceUrl")
+    private final WebClient webClient;
+
     @Override
     public Mono<CreditDTO> findCreditById(String creditId) {
-        return creditWebClient.get()
+        return webClient.get()
                 .uri("/api/credit/retrieve/{creditId}", creditId)
                 .retrieve()
                 .bodyToMono(CreditDTO.class);
@@ -28,7 +31,7 @@ public class WebClientCreditService implements IWebClientCreditService {
 
     @Override
     public Mono<CreditDTO> updateCredit(CreditDTO credit) {
-        return creditWebClient.put()
+        return webClient.put()
                 .uri("/api/credit/update")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .bodyValue(credit)

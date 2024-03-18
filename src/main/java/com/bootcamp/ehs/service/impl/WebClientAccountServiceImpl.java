@@ -18,9 +18,12 @@ public class WebClientAccountServiceImpl implements IWebClientAccountService {
     @Qualifier("accountWebClient")
     private final WebClient accountWebClient;
 
+    @Qualifier("gatewayServiceUrl")
+    private final WebClient webClient;
+
     @Override
     public Mono<AccountDTO> findAccountById(String accountId) {
-        return accountWebClient.get()
+        return webClient.get()
                 .uri("/api/account/list/{accountId}", accountId)
                 .retrieve()
                 .bodyToMono(AccountDTO.class);
@@ -28,7 +31,7 @@ public class WebClientAccountServiceImpl implements IWebClientAccountService {
 
     @Override
     public Mono<AccountDTO> updateAccount(AccountDTO account) {
-        return accountWebClient.put()
+        return webClient.put()
                 .uri("/api/account/update")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .bodyValue(account)
