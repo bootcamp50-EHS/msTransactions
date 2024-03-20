@@ -1,10 +1,12 @@
 package com.bootcamp.ehs.service.impl;
 
 import com.bootcamp.ehs.model.Transaction;
+import com.bootcamp.ehs.producer.KafkaPayCreditProducer;
 import com.bootcamp.ehs.repo.ITransactionRepo;
 import com.bootcamp.ehs.service.ITransactionPayCreditService;
 import com.bootcamp.ehs.service.IWebClientAccountService;
 import com.bootcamp.ehs.service.IWebClientCreditService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,8 @@ public class TransactionPayCreditServiceImpl implements ITransactionPayCreditSer
 
     private final ITransactionRepo transactionRepo;
     private final IWebClientCreditService creditService;
+
+    private final KafkaPayCreditProducer kafkaPayCreditProducer;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionPayCreditServiceImpl.class);
 
@@ -52,6 +56,32 @@ public class TransactionPayCreditServiceImpl implements ITransactionPayCreditSer
                 .onErrorResume(e -> {
                     return Mono.error(new RuntimeException("Transactions -> doPayCredit: Error en pago de credito: " + e.getMessage(), e));
                 });
+
+    }
+
+
+    @Override
+    public Mono<Transaction> doPayCreditWithKafka(Transaction transaction){
+            LOGGER.info("Proceso de Pago Credito con Kafka");
+            return creditService.findCreditById(transaction.getCreditId())
+                    .filter(credit -> credit.getAmount().compareTo(credit.getPayment().add(transaction.getAmount())) >= 0)
+                    .switchIfEmpty(Mono.error(new IllegalArgumentException("Transactions -> doPayCredit: El pago es mayor al credito")))
+                    .flatMap(credit -> {
+
+                        credit.setPayment(credit.getPayment().add(transaction.getAmount()));
+                        try {
+                            kafkaPayCreditProducer.sendMessagePayCredit(credit);
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException(e);
+                        }
+                        transaction.setTypeTransaction("Pago Credito");
+                        transaction.setSign(1);
+                        transaction.setDateTimeTransaction(LocalDateTime.now());
+                        return transactionRepo.save(transaction);
+                    })
+                    .onErrorResume(e -> {
+                        return Mono.error(new RuntimeException("Transactions -> doPayCreditKafka: Error en pago de credito: " + e.getMessage(), e));
+                    });
 
     }
 }

@@ -15,6 +15,7 @@ public class CreditDTO {
     private String id;
     private BankDTO bank;
     private String customerId;
+    private String creditType;
     private BigDecimal amount;
     private BigDecimal payment ;
 }

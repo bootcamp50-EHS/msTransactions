@@ -6,4 +6,6 @@ import reactor.core.publisher.Mono;
 public interface ITransactionPayCreditService {
 
     Mono<Transaction> doPayCredit (Transaction transaction);
+
+    Mono<Transaction> doPayCreditWithKafka(Transaction transaction);
 }
