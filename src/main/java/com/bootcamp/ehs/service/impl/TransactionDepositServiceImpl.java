@@ -43,7 +43,6 @@ public class TransactionDepositServiceImpl implements ITransactionDepositService
                             .flatMap(accountUpdate -> {
                                 transaction.setTypeTransaction("Deposito");
                                 transaction.setSign(1);
-                                //0transaction.setDateTimeTransaction(LocalDateTime.now());
                                 return transactionRepo.save(transaction)
                                         .then(commisionService.applyCommision(transaction))
                                         .thenReturn(transaction);

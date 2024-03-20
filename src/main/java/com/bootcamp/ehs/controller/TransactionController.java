@@ -105,6 +105,14 @@ public class TransactionController   {
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
+    @PostMapping("/paycreditkafka")
+    public Mono<ResponseEntity<Transaction>> registerPayCreditWithKafka(@RequestBody Transaction transaction){
+
+        return payCreditService.doPayCreditWithKafka(transaction).
+                map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
         return ResponseEntity
